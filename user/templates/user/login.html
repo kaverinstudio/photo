@@ -1,0 +1,59 @@
+<div
+  class="modal fade"
+  id="modal-login"
+  data-backdrop="static"
+  data-keyboard="false"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Вход на сайт</h4>
+      </div>
+      {% if user.is_anonymous %}
+      <div class="modal-body">
+        <div class="login-form">
+          {% if form.errors %}
+          <div class="text-center">
+            {% for _, error in form.errors.items %}
+            <strong>{{ error }}</strong>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <form action="{% url 'user:login' %}" method="post">
+            {% csrf_token %}
+            <div class="inputs">
+              {{ error }}
+              <table class="inputs">
+                {{ login_link.as_table }}
+              </table>
+            </div>
+            <div class="button row justify-content-between p-2 mt-3">
+              <input
+                class="col-3 btn btn-primary"
+                type="submit"
+                value="Войти"
+              />
+              <a class="d-block text-end col-5" href="{% url 'user:signup' %}"
+                >Не зарегистрированы?</a
+              >
+            </div>
+          </form>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-center">
+        <a href="{% url 'user:edit' user.id %}">Вход в личный кабинет</a>
+      </p>
+      <div class="button row text-center p-2 mt-3">
+        <form
+          action="{% url 'user:logout' %}?next={{ request.path }}"
+          method="post"
+        >
+          {% csrf_token %}
+          <input class="col-3 btn btn-primary" type="submit" value="Выход" />
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

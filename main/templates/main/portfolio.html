@@ -1,0 +1,77 @@
+{% extends 'layout/default.html' %} {% load static %} {%block title %} Photo-one
+/ Наши работы {% endblock title %} {% block jquery1_8 %}
+<script src="{% static '/js/jquery-1.8.2.min.js' %}"></script>
+{%endblock jquery1_8 %} {% block content %}
+<script src="{% static 'js/galereya-latest/jquery.galereya.min.js' %}"></script>
+<script>
+  $(function () {
+    $("#galleryherepls").galereya({
+      load: function (next) {
+        $.getJSON("images.json", function (data) {
+          next(data);
+        });
+      },
+    });
+  });
+</script>
+
+<main>
+  <section>
+    <div class="container-fluid text-center">
+      <h1>Наши работы</h1>
+      <div class="container text-center">
+        <hr class="line" />
+      </div>
+      <div class="container">
+        <div id="galleryherepls"></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+  $('#galleryherepls').galereya({
+             //spacing between cells of the masonry grid
+             spacing: 0,
+
+             //waving visual effect
+             wave: true,
+
+             //waving visual effect timeout duration
+             waveTimeout: 300,
+
+             // special CSS modifier for the gallery
+             modifier: '',
+
+             //speed of the slide show
+             slideShowSpeed: 10000,
+
+             //speed of appearance of cells
+             cellFadeInSpeed: 200,
+
+             //the name of the general category
+             noCategoryName: 'Все фотографии',
+
+             //set to true, if you don't want to show the slider on the cell click.
+             disableSliderOnClick: false,
+
+             //loading of images from JS. Just pass data to the callback 'next'.
+             load: function(next) {
+                 //Data structure example
+                 var data = [
+                 {% for photo in photos %}
+                 {"lowsrc":"{{ photo.photo.url }}","fullsrc":"{{ photo.photo.url }}","description":"{{ photo.photodesc }}","category":"{% for cat in photo_cat %}{% if cat.id == photo.showphoto_id %}{{ cat.photo_title }}{% endif %}{% endfor %}"},
+                  {% endfor %}
+                ]
+                 next(data);
+             },
+
+             //Cell click handler. Works even when the 'disableSliderOnClick' property is true.
+             onCellClick: function(e) {}
+     });
+</script>
+<style>
+  footer {
+    display: none;
+  }
+</style>
+{% endblock content %}

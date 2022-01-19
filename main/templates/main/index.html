@@ -1,0 +1,78 @@
+{% extends 'layout/default.html' %} {% block title %} Photo-one / Главная
+{%endblock title %} {% block content %} {% load static %} {% block javascript %}
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+  $(document).ready(function () {
+    if (Swiper) {
+      var swiper = new Swiper(".my-swiper", {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        speed: 1000,
+        loop: true,
+        autoplay: {
+          delay: 5000,
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
+    }
+  });
+</script>
+{% endblock javascript %}
+
+<main>
+  <section class="slider">
+    <div class="container text-center">
+      <!-- Swiper -->
+      <div class="swiper-container my-swiper" style="overflow: hidden">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img src="{% static '/img/sunset.jpg' %}" alt="" />
+          </div>
+          <div class="swiper-slide">
+            <img src="{% static '/img/sea.jpg' %}" alt="" />
+          </div>
+          <div class="swiper-slide">
+            <img src="{% static '/img/more.jpg' %}" alt="" />
+          </div>
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination mobile_hidden"></div>
+      </div>
+      <div class="slider-text-block">
+        <p class="slider-text mobile_hidden">
+          ПРИЕМ ФОТОГРАФИЙ НА ПЕЧАТЬ <br />
+          С ДОСТАВКОЙ
+        </p>
+        <a href="{% url 'order' %}" class="btn btn-primary"
+          >ЗАКАЗАТЬ ФОТО ON-LINE</a
+        >
+      </div>
+    </div>
+  </section>
+  <section class="main-card">
+    <div class="container d-flex flex-wrap justify-content-between">
+      {% for post in card %}
+      <div
+        class="card-wrapper mx-auto d-flex flex-column align-items-center justify-content-around"
+      >
+        <div class="card-image p-2 pt-4">
+          <img src="{{ post.image.url }}" alt="" />
+        </div>
+        <p class="card-text p-2">{{ post.description }}</p>
+        <a href="{{ post.post_link }}" class="card-link pb-3"
+          >Узнать подробнее</a
+        >
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+{% endblock content %}

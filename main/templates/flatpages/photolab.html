@@ -1,0 +1,15 @@
+{% extends 'layout/default.html' %} {% load static %} {%block title %}
+{{flatpage.title}} {% endblock title %} {% block content %}
+
+<main>
+  <section>
+    <div class="container">{{flatpage.content}}</div>
+    <div class="container text-center mt-3">
+      <a href="{% url 'order' %}" class="btn btn-primary"
+        >ЗАКАЗАТЬ ПЕЧАТЬ ФОТОГРАФИЙ</a
+      >
+    </div>
+  </section>
+</main>
+
+{% endblock content %}

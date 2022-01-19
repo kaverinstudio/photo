@@ -1,0 +1,23 @@
+{% extends 'layout/default.html' %} {% block content %}
+<div class="container">
+  <div class="text-center">
+    <hr class="line mt-0" />
+  </div>
+</div>
+<div class="container col p-4">
+  <h3 class="d-block text-center p-3">Личный кабинет</h3>
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <div class="inputs">
+      <table class="inputs">
+        {{ form.as_table }}
+      </table>
+    </div>
+    <div class="button pt-2 text-center text-sm-start">
+      <input class="btn btn-primary" type="submit" value="Сохранить" />
+    </div>
+  </form>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,43 @@
+{% extends 'layout/default.html' %} {% load static %} {%block title %} Photo-one
+/ Наши контакты {% endblock title %} {% block content %}
+
+<main>
+  <section class="contact">
+
+    <div class="container d-flex">
+      
+      <div class="container-fluid text-center p-0">
+        <h1>Наши контакты</h1>
+        <div class="content-block-list">
+          <hr class="line" />
+          <div class="content-block-map d-flex justify-content-between flex-column flex-lg-row">
+            <div class="content-block-map-layer col-12 col-lg-9">
+              <script
+                type="text/javascript"
+                charset="utf-8"
+                async
+                src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Aa3eb24524193499ed5e98a52b792874345e35b3d36d0bf524829871d21b31775&amp;width=auto&amp;heigh=auto&amp;lang=ru_RU&amp;scroll=true"
+              ></script>
+            </div>
+            <div class="content-block-address col-12 col-lg-3">
+              <br /><br />
+              <b>Наш адрес:</b> <br />
+              <i class="fa fa-building-o"></i>Волгоградская область, <br> город Камышин <br> ул. Октябрьская дом 23 <br /><br />
+              <br />
+              <b>Телефоны: </b> <br />
+              <i class="fa fa-phone-square"></i> +7 (927) 530-97-87 <br />
+              <i class="fa fa-phone-square"></i> +7 (937) 267-99-35 <br /><br />
+              <b>График работы: </b> <br />
+              <i class="fa fa-clock-o"></i> 09:00 - 18:00 (пн-птн)<br />
+              <i class="fa fa-clock-o"></i> 10:00 - 15:00 (сб-вс)<br />
+            </div>
+          </div>
+        </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</main>
+{% endblock content %}

@@ -1,0 +1,134 @@
+{% extends 'layout/default.html' %}
+
+{% load mathfilters %}
+
+{% load static %}
+{% block title %}
+Photo-one / Оформить заказ
+{% endblock title %}
+
+{% block content %}
+<main>
+    <section class="order">
+
+        <div class="container d-flex">
+        
+                <div class="container-fluid text-center">
+                    <h1>Оформление заказа</h1>                       
+                        <a type="button" href="/order/" class="btn btn-primary m-3">
+                        <span class="glyphicon glyphicon-cloud-upload"></span> Изменить заказ
+                        </a>
+                       <table id="gallery" class="table table-bordered">
+                            <thead class="table-head">
+                               <tr>
+                                    <th class="container d-flex justify-content-between flex-column flex-lg-row">
+                                    <div class="col-12 col-lg-8">
+                                        <p>Ваш заказ:</p>
+                                            <table class="table table-bordered border-primary text-center">
+                                            <tr><td>Формат</td><td>Бумага</td><td>Кол-во</td><td>Цена</td><td>Стоимость</td></tr>
+                                            {% for item in orders %}
+                                            <tr><td>{{ item.order_format }}</td><td>{{ item.order_papier }}</td><td>{{ item.order_count }}</td>
+                                                {% for i in cost %}
+                                                    {% if i.name == item.order_format %}
+                                                    <td>{{ i.cost }} руб</td>
+                                                    <td>{{ i.cost|mul:item.order_count }} руб</td></tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endfor %}
+                                            </table>
+                                        </div>
+                                    <div class="col-12 col-lg-4 text-end justify-content-center">
+                                        <span id="price_order" style="display: none;">{{ price }}</span>
+                                    <p class="d-block">Стоимость заказа: {{ price }} руб</p>
+                                    
+                                    <p class="d-block">Стоимость доставки: <span id="price_delivery">--- руб</span></p>
+                                      
+                                    <p class="d-block">Полная стоимость заказа: <span id="full_price">---</span> руб</p>
+
+                                    </div> 
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                </div>
+        </div>
+        <div class="container">
+        
+        <div class="container d-flex">
+
+            {% block added %}{% endblock added %}
+
+                <form method="post" action="{% url 'added-order' %}" class="row g-3 needs-validation mb-4" novalidate>
+                {% if user_info %}
+                {% for user in user_info %}
+                {% csrf_token %} 
+                    <div class="col-md-4">
+                        <label for="validationCustom01" class="form-label">Имя</label>
+                        <input value="{{ user.first_name }}" name="name" type="text" class="form-control" id="validationCustom01" placeholder="Введитe Ваше имя" required>
+                        <div class="valid-feedback">
+                        Все хорошо!
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="validationCustom02" class="form-label">Телефон</label>
+                        <input value="{{ user.phone }}" name="phone" type="tel" class="form-control" id="validationCustom02" placeholder="Введитe Ваш номер телефона" required>
+                        <div class="valid-feedback">
+                        Все хорошо!
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="validationCustom04" class="form-label">Варианты доставки</label>
+                        <select name="delivery" class="form-select" id="validationCustom04" required>
+                        <option selected disabled value="">Выберите...</option>
+                        <option value="Забрать из студии самостоятельно">Забрать из студии самостоятельно</option>
+                        <option value="Заказать доставку по адресу">Заказать доставку по адресу</option>
+                        </select>
+                        <div class="invalid-feedback">
+                        Пожалуйста, выберите варианты доставки.
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="validationCustom03" class="form-label">Адрес доставки</label>
+                        <input value="{{ user.city }}" name="address" type="text" class="form-control" id="validationCustom03" required>
+                        <div class="invalid-feedback">
+                        Укажите адрес доставки.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="validationTextarea" class="form-label">Текстовое поле</label>
+                        <textarea name="comment" class="form-control" id="validationTextarea" placeholder="Комментарий к Вашему заказу можно оставить в этом поле"></textarea>
+                        <div class="invalid-feedback">
+                        Пожалуйста, введите сообщение в текстовое поле.
+                        </div>
+                    </div>
+                    <div class="col-12 text-center text-lg-start">
+                        <button class="btn btn-primary" type="submit">Оформить заказ</button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    </form>
+        </div>       
+    </section>
+</main>
+<script>
+
+(function () {
+  'use strict'
+
+  var forms = document.querySelectorAll('.needs-validation')
+
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+
+</script>
+{% endblock content %}

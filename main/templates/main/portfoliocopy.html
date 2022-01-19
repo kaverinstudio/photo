@@ -1,0 +1,52 @@
+{% extends 'layout/default.html' %} {% load static %} {%block title %} Photo-one
+/ Наши работы {% endblock title %} {% block content %} {% block jquery1_8 %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="{% static '/unitegallery/js/unitegallery.min.js' %}"></script>
+<link rel="stylesheet" href="{% static '/unitegallery/css/unite-gallery.css' %}"></link>
+<script src="{% static '/unitegallery/themes/default/ug-theme-default.js' %}"></script>
+<link rel="stylesheet" href="{% static '/unitegallery/themes/default/ug-theme-default.css' %}"></link>
+{%endblock jquery1_8 %}
+<main>
+  <section class="contact">
+    <div class="container-fluid text-center">
+      <h1>Наши работы</h1>
+      <div class="container text-center">
+        <hr class="line" />
+        <div class="contentd-flex justify-content-between">
+          {% comment %}
+          <div id="galleryherepls">
+            {% for photo in photo_card %}
+            <img
+              src="{{ photo.photo.url }}"
+              alt="{{ photo.description }}"
+              title="{{ photo.description }}"
+              data-desc="{{ photo.description }}"
+              data-category="disign"
+              data-fullsrc="{{ photo.photo.url }}"
+            />
+            {% endfor %}
+          </div>
+          {% endcomment %}
+          <div id="gallery" style="display: none">
+             {% for photo in galery_list %}
+            <img
+              alt="{{ photo.photo_title }}"
+              src="{{ photo.photo.url }}"
+              data-image="{{ photo.photo.url }}"
+              data-description="{{ photo.photo_title }}"
+            />
+            {% endfor %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+  $(document).on('ready', function(){
+    console.log('galery');
+      $("#gallery").unitegallery();
+  });
+</script>
+{% endblock content %}

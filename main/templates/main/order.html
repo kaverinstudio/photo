@@ -1,0 +1,218 @@
+{% extends 'layout/default.html' %}
+
+{% load static %}
+{% block title %}
+Photo-one / Страница заказа
+{% endblock title %}
+
+{% block javascript %}
+  {# JQUERY FILE UPLOAD SCRIPTS #}
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
+  <script src="{% static 'js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload.js' %}"></script>
+
+  {# PHOTOS PAGE SCRIPTS #}
+  <script src="{% static 'js/basic-upload.dev.js' %}"></script>
+<script>
+    var service_info = JSON.parse('{{ service_data|safe }}');
+
+    function calcOrder() {
+        
+        var order_info = [];  // [{"format": "10x15", count: 1, type: 'glance'}]
+
+        $('.photo-card .td').each(function() {
+            var format = $(this).find('select[name="format"]').val();
+            var count = parseInt($(this).find('.photocount').val());
+        //    console.log("Found photo card", format, count);
+            order_info.push({
+                "format": format,
+                "count": count,
+                "type": $(this).find('input[type="radio"]:checked').val(),
+            });
+        });
+      //  console.log(order_info);
+
+        // group by format, type
+        var format_type_to_count = {};
+        for (let photo of order_info) {
+            if (typeof format_type_to_count[`${photo.format}-${photo.type}`] == 'undefined')
+                format_type_to_count[`${photo.format}-${photo.type}`] = {
+                    'format': photo.format,
+                    'type': photo.type,
+                    'cost': service_info[photo.format],
+                    'count': 0
+                };
+            format_type_to_count[`${photo.format}-${photo.type}`].count += photo.count;
+        }
+      //  console.log(format_type_to_count);
+
+        // render data
+        var table = '';
+        var price = 0;
+        for (const [key, row] of Object.entries(format_type_to_count)) {
+            price += row.count * row.cost
+            table += "<tr><td>" + row.format
+                + "</td><td>" + row.type
+                + "</td><td>" + row.count
+                + "</td><td>" + row.cost
+                + "</td><td>" + row.count * row.cost + "</td></tr>"
+        }
+
+        if(table){
+            $('.table-head').html(
+            "<tr>" +
+            "<th class='container d-flex justify-content-between flex-column flex-lg-row'>" +
+            "<div class='col-lg-8 col-12'>" +
+            "<p>Ваш заказ:</p>" +
+            "<table class='table table-bordered border-primary text-center order-table'>" +
+            "<tr><td>Формат</td><td>Бумага</td><td>Кол-во, шт</td><td>Цена, руб</td><td>Стоимость, руб</td></tr>" +
+            table +
+            "</table>" +
+            "</div>" +
+            "<div class='col-lg-4 col-12 text-lg-end text-center'>" +
+            "<p>Стоимость заказа: " + price + " руб" + "</p>" +
+            "<div class='col-12 d-flex justify-content-between'>" +
+                "<button type='button' class='btn btn-primary change-order-show m-lg-3 col-lg-5 col-5'>" +
+                    "<span class='glyphicon glyphicon-cloud-upload'></span>Пакетное изменение заказа" + 
+                "</button>" +
+                "<a href='/complite/' class='mt-lg-3 col-lg-5 col-5'>" +
+            "<button class='btn btn-danger w-100' type='submit'>Оформить заказ</button>" +
+            "</a>" +
+            "</div>" +
+            "</div>" +
+            "</th>" +
+            "</tr>"
+            );
+        }
+        
+        
+    }
+
+    $(document).ready(function() {
+        $('.order-data').click(calcOrder);
+        $('.order-data').change(calcOrder);
+        calcOrder();
+        
+    });
+       
+  </script>
+{% endblock javascript %}
+
+{% block content %}
+<main>
+    <section class="order">
+        <div class="container">
+            <div class="order-block container">
+                <div class="container-fluid text-center">
+                    <h1>Загрузка фотографий</h1>
+                        {# 1. BUTTON TO TRIGGER THE ACTION #}
+                        <button type="button" class="btn btn-primary js-upload-photos m-3">
+                        <span class="glyphicon glyphicon-cloud-upload"></span> Загрузить фотографии
+                        </button>
+
+                        {# 2. FILE INPUT TO BE USED BY THE PLUG-IN #}
+                        <input id="fileupload" type="file" name="file" multiple
+                            style="display: none;"
+                            data-url="{% url 'order' %}" 
+                            data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+
+                        {# 3. TABLE TO DISPLAY THE UPLOADED PHOTOS #}
+
+                        <table id="gallery" class="table table-bordered">
+                            <thead class="table-head">
+
+                            </thead>
+                        </table>
+                        {# МОДАЛКА ПЕКАЕТНОЕ ИЗМЕНЕНИЕ ЗАКАЗА #}
+                        <div class="all-order-change col-3 text-center m-auto p-1 modal fade" style="border: 1px solid #dee2e6;" data-backdrop="static" data-keyboard="false">
+                                    <div class="modal-dialog position-relative">
+                                        
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <div id="all-order-change-close"></div>
+                                    <h4 class="modal-title m-auto">Пакетное измение заказа</h4>
+                                    </div>
+                                        <div class="modal-body col-8 m-auto">
+                                            <p class="p-2">Формат фотографии</p>
+                                            <select name="all_format" class="formatselect form-select order-data mb-2">                             
+                                                <option value="10x15">10x15</option>
+                                                <option value="15x21">15x21</option>
+                                                <option value="20x30">20x30</option>                              
+                                            </select>Кол-во 
+                                            <input class="all_photocount order-data" type="number" value="1" min="1"> шт
+                                            <div class="text-start justify-content-around d-flex mt-2">
+                                                <div class="d-flex align-items-center">
+                                                    <p class="d-inline-block">Тип бумаги</p>
+                                                </div>
+                                                <div>
+                                                <div class="col-md-12 m-auto"><input class="photopapier order-data" type="radio" name="papier_type" value="Глянцевая" checked> <span>Глянцевая</span> </div>
+                                                <div class="col-md-12 m-auto"><input class="photopapier order-data" type="radio" name="papier_type" value="Матовая" > <span>Матовая</span> </div>
+                                            </div>
+                                            </div>  
+                                            <button type="button" class="btn btn-primary change-order m-3">
+                                                <span class="glyphicon glyphicon-cloud-upload"></span> Применить ко всем фотографиям
+                                            </button> 
+                                        </div>
+                                    </div> 
+                                </div>                                   
+                            </div>
+
+                            <div class="d-flex photo-card flex-wrap row">                       
+                                {% for photo in photos %}    
+                                    {% comment %} {{ form_asp}}                                                     {% endcomment %}
+                                    <div class="td col-lg-2 col-md-3 col-sm-6">
+                                        <a href="{{ photo.file.url }}">
+                                            <div class="order-photo">
+                                                <img data-fancybox="order" id="photoId{{ photo.id }}" src="{{ photo.file.url }}">                                           
+                                            </div>
+                                        </a> 
+                                        <div>
+                                            <input
+                                                type="image" src="{% static 'img/x-button.png' %}"
+                                                class="delete-photo order-data"
+                                                data-csrf="{{ csrf_token }}"
+                                                data-id="{{ photo.id }}">
+                                            </input>
+                                            <p>Формат фотографии</p>
+                                            <select name="format" class="formatselect form-select order-data">
+                                                {% for format in photo.FORMATS %}
+                                                <option data-id="{{ photo.id }}" value="{{ format|first }}" {% if photo.format == format|first %}selected{% endif %}>{{ format|last }}</option>
+                                                {% endfor %}
+                                            </select>Кол-во 
+                                            <input class="photocount order-data" type="number" value="{{ photo.count }}" data-id="{{ photo.id }}" min="1"> шт
+                                            <div class="col text-start">
+                                                <div class="col-md-12 m-auto"><input class="photopapier order-data" type="radio" name="papier{{ photo.id }}" value="Глянцевая" data-id="{{ photo.id }}" {% if photo.papier == "Глянцевая" %}checked={% endif %}checked> <span>Глянцевая</span> </div>
+                                                <div class="col-md-12 m-auto"><input class="photopapier order-data" type="radio" name="papier{{ photo.id }}" value="Матовая" data-id="{{ photo.id }}"  {% if photo.papier == "Матовая" %}checked={% endif %}> <span>Матовая</span> </div>
+                                            </div>                                     
+                                        </div>
+                                    </div>                               
+                                                       
+                                {% endfor %}
+                            </div>
+                        
+                            {# 4. LOAD PROGRESS #}
+                        <div class="modal fade" id="modal-progress" data-backdrop="static" data-keyboard="false">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Загрузка...</h4>
+                                    </div>
+                                <div class="modal-body">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                </div>
+            </div>
+           
+        </div>
+        
+    </section>
+</main>
+{% endblock content %}

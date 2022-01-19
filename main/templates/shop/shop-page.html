@@ -1,0 +1,42 @@
+{% extends 'layout/default.html' %} {% load static %} {% block title %}Photo-one / Магазин{% endblock title %} {% block content %}
+
+<main>
+  <section>
+    <div class="container text-center">
+      <select data-csrf="{{ csrf_token }}" class="form-select category-select" onchange="location = this.value;">
+          <option value="{% url 'shop:product' %}">Все товары</option>
+          {% for cat in category %}
+          <option value="{{ cat.category }}" {% for product in products %}{% if cat.category == product.category %}selected{% else %}''{% endif %}{% endfor %}>{{ cat.category }}</option>
+          {% endfor %}
+      </select>
+
+      <div class="text-center">
+        <hr class="line" />
+      </div>
+            <div class="row row-cols-1 row-cols-lg-5 g-4 row-cols-sm-3 row-cols-md-4">
+            {% for product in products %}
+                <div class="col shop-page">   
+                <a href="{% url 'shop:detail' product.id %}">       
+                  <div class="card">
+                  {% for photo in products_photos %}
+                  {%if photo.show_id == product.id %}
+                  <div class="card-image-main p-2 mt-2">
+                    <img src="{{ photo.photo.url }}" class="card-img-top" alt="...">
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <div class="card-body">
+                      <h5 class="card-title">{{ product.name }}</h5>
+                      <p class="card-text">{{ product.category }}</p>
+                      <p class="card-text card-text-description">{{ product.description|truncatewords:7 }}</p>
+                      <p class="card-text">Цена: <strong>{{ product.price }}</strong> руб.</p>
+                    </div>
+                  </div>
+                  </a>
+                </div>               
+            {% endfor %}
+      </div>
+  </section>
+</main>
+
+{% endblock content %}

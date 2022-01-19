@@ -1,0 +1,38 @@
+{% extends 'main/complite.html' %} {% block added %}
+<div class="container d-flex">
+  <div
+    class="added-form modal fade"
+    id="modal-added"
+    data-backdrop="static"
+    data-keyboard="false"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header justify-content-center">
+          <h4 class="modal-title text-center">
+            {% if order %} {{ order }}, Ваш заказ принят, спасибо! {% endif %}
+          </h4>
+        </div>
+        <div class="modal-body">
+          <div class="login-form text-center">
+            <a
+              name=""
+              id=""
+              class="btn btn-primary"
+              href="{% url 'home' %}"
+              role="button"
+              >Отлично!</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if successful_submit %}
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(".added-form").modal("show");
+    });
+  </script>
+  {% endif %} {% endblock added %}
+</div>

@@ -1,0 +1,70 @@
+{% extends 'layout/default.html' %} {% load static %} {% block title %}Photo-one / {% for product in product %}{{ product.name }} {% endfor %}{% endblock title %} {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/f4b4978e47.js" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        if (Swiper) {
+            var swiper = new Swiper(".tovar-swiper", {
+                slidesPerView: 5,
+                spaceBetween: 10,
+                speed: 1000,
+                loop: true,
+                loopedSlides: 0,
+                autoplay: {
+                    delay: 5000,
+                },
+            });
+        }
+    });
+</script>
+
+<main>
+    <section>
+        <div class="container text-center">
+            <div class="breadcrumb d-flex align-items-center">
+                <a href="{% url 'home' %}" class="d-inline-block px-2">Главная</a>
+                <i class="fa fa-long-arrow-right d-inline-block" aria-hidden="true"></i> 
+                <a href="{% url 'shop:product' %}" class="d-inline-block px-2">Все товары</a> 
+                <i class="fa fa-long-arrow-right d-inline-block" aria-hidden="true"></i> 
+                <p class="d-inline-block px-2">{% for product in product %}{{ product.category }}{% endfor %}</p>
+            </div>
+            <div class="text-center">
+                <hr class="line" />
+            </div>
+            <div class="col d-flex justify-content-between flex-column flex-lg-row">
+                <div class="detail-image col-12 col-lg-6">
+                    <a href="{{ first_photo.photo.url }}">
+                        <img data-fancybox="shop-page-detail" src="{{ first_photo.photo.url }}" class="card-img-top p-2" alt="...">
+                    </a>
+                    <div class="detai-image-row d-flex justify-content-between col px-2">
+                        {% for product in product %}
+                        <div class="swiper-container tovar-swiper" style="overflow: hidden">
+                            <div class="swiper-wrapper">
+                                {% for photo in product_photo %} {%if photo.show_id == product.id %}
+                                <div class="swiper-slide slider-detail">
+                                    <a href="{{ photo.photo.url }}">
+                                        <img data-fancybox="shop-page-detail" src="{{ photo.photo.url }}" class="" alt="...">
+                                    </a>
+                                </div>
+                                {% endif %} {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-start">{{ product.name }}</h5>
+                            <p class="card-text text-start">Категория: {{ product.category }}</p>
+                            <p class="card-text text-start">{{ product.description }}</p>
+                            <p class="card-text text-start">Цена: <strong>{{ product.price }}</strong> руб.</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+    </section>
+</main>
+
+{% endblock content %}
