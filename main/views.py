@@ -184,8 +184,11 @@ class OrderComplite(View):
 
 
 def confirm_order(request):
+    photos_list = Photo.get_user_photos(request)
+    for photo in photos_list:
+        user_id = photo.session_key
     added_order = None
-
+    
     if request.method == 'POST':
         order = ConfirmOrder(
             name=request.POST['name'],
@@ -193,6 +196,7 @@ def confirm_order(request):
             delivery=request.POST['delivery'],
             address=request.POST.get('address'),
             comment=request.POST.get('comment'),
+            session_key=user_id
         )
         moveFiles(request)
         order.save()
@@ -200,14 +204,15 @@ def confirm_order(request):
         date_time = datetime.now().strftime("%m-%d-%Y %H:%M")
         photos_list = Photo.get_user_photos(request)
         for photo in photos_list:
+            user_id = photo.session_key
             photo_path = os.path.dirname(photo.file.path)
             client_path = photo.file.name
             client_name = ''.join(client_path.split('/')[1])
             order_file = photo_path + '\\' + client_name + '.txt'
-
+            
         order_log = open(order_file, mode="a", encoding="utf-8")
-        order = ConfirmOrder.objects.all()
-        order.update(link=photo_path)
+        order = ConfirmOrder.objects.all().filter(session_key=user_id)
+        order.update(link=client_name)
         order_data = ''
         order_data += "Время заказа - " + date_time + '\n'
         order_data += "Клиент - " + added_order.name + '\n'

@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth.decorators import user_passes_test
 from . import views
 
 

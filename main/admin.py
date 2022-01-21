@@ -3,7 +3,7 @@ from django.db import models
 from django.template.loader import get_template
 from django.utils.translation import gettext as _
 from django.utils.safestring import mark_safe
-from django.utils.html import format_html
+# from django.utils.html import format_html
 from main.forms import PortfolioAdminForm
 from shop.forms import ShopAdminForm
 
@@ -33,12 +33,12 @@ admin.site.register(FlatPage, FlatPageAdmin)
 
 class ConfirnOrderView(admin.ModelAdmin):
     list_display = ['name', 'phone', 'delivery',
-                    'address', 'comment', 'show_firm_url', ]
+                    'address', 'comment', 'create_at', 'link']
 
-    def show_firm_url(self, obj):
-        return format_html("<a href='{url}'>{url}</a>", url=obj.link)
+    # def show_firm_url(self, obj):
+    #     return format_html("<p>{url}</p>", url=f'/orders/{obj.link}')
 
-    show_firm_url.short_description = "Ссылка на заказ"
+    # show_firm_url.short_description = "Ссылка на заказ"
 
 
 admin.site.register(ConfirmOrder, ConfirnOrderView)

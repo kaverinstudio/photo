@@ -111,7 +111,7 @@ class Orders(models.Model):
 
 class ConfirmOrder(models.Model):
 
-    image = models.CharField(max_length=500, blank=True, null=True)
+    # image = models.ImageField()
     user = models.ForeignKey(
         to='user.UserModel', on_delete=CASCADE, blank=True, null=True)
     name = models.CharField(max_length=100, null=True,
@@ -124,8 +124,9 @@ class ConfirmOrder(models.Model):
         max_length=200, blank=True, null=True, verbose_name='Адрес доставки')
     comment = models.CharField(
         max_length=500, blank=True, null=True, verbose_name='Комментарии к заказу')
-    create_at = models.DateTimeField(auto_now_add=True)
-    link = models.FilePathField(blank=True, null=True, allow_folders=True)
+    create_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата и время заказа')
+    link = models.FilePathField(blank=True, null=True, allow_folders=True, verbose_name='Папка с заказом')
+    session_key = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self) -> str:
         return f'{self.name}'

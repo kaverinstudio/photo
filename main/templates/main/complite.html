@@ -59,19 +59,17 @@ Photo-one / Оформить заказ
             {% block added %}{% endblock added %}
 
                 <form method="post" action="{% url 'added-order' %}" class="row g-3 needs-validation mb-4" novalidate>
-                {% if user_info %}
-                {% for user in user_info %}
                 {% csrf_token %} 
                     <div class="col-md-4">
                         <label for="validationCustom01" class="form-label">Имя</label>
-                        <input value="{{ user.first_name }}" name="name" type="text" class="form-control" id="validationCustom01" placeholder="Введитe Ваше имя" required>
+                        <input value="{% if user_info %}{% for user in user_info %}{{ user.first_name }}{% endfor %}{% endif %}" name="name" type="text" class="form-control" id="validationCustom01" placeholder="Введитe Ваше имя" required>
                         <div class="valid-feedback">
                         Все хорошо!
                         </div>
                     </div>
                     <div class="col-md-4">
                         <label for="validationCustom02" class="form-label">Телефон</label>
-                        <input value="{{ user.phone }}" name="phone" type="tel" class="form-control" id="validationCustom02" placeholder="Введитe Ваш номер телефона" required>
+                        <input value="{% if user_info %}{% for user in user_info %}{{ user.phone }}{% endfor %}{% endif %}" name="phone" type="tel" class="form-control" id="validationCustom02" placeholder="Введитe Ваш номер телефона" required>
                         <div class="valid-feedback">
                         Все хорошо!
                         </div>
@@ -89,7 +87,7 @@ Photo-one / Оформить заказ
                     </div>
                     <div class="col-md-12">
                         <label for="validationCustom03" class="form-label">Адрес доставки</label>
-                        <input value="{{ user.city }}" name="address" type="text" class="form-control" id="validationCustom03" required>
+                        <input value="{% if user_info %}{% for user in user_info %}{{ user.city }}{% endfor %}{% endif %}" name="address" type="text" class="form-control" id="validationCustom03" required>
                         <div class="invalid-feedback">
                         Укажите адрес доставки.
                         </div>
@@ -104,8 +102,6 @@ Photo-one / Оформить заказ
                     <div class="col-12 text-center text-lg-start">
                         <button class="btn btn-primary" type="submit">Оформить заказ</button>
                     </div>
-                    {% endfor %}
-                    {% endif %}
                     </form>
         </div>       
     </section>
